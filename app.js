@@ -1,10 +1,7 @@
-const fs = require('node:fs/promises');
-const path = require('node:path');
-const { spawn } = require('node:child_process');
+const fs = require('fs/promises');
+const path = require('path');
+const { spawn } = require('child_process');
 const { CronJob } = require('cron');
-
-// ffmpeg -framerate 30 -pattern_type glob -i "path/*.jpg" -s:v 1280x720 -c:v libx264 -crf 17 
-// -pix_fmt yuv420p my-timelapse.mp4
 
 const DAY_MS = 1000 * 3600 * 24;
 const CAMERA_FILE_PATH = path.join(__dirname, 'images');
@@ -42,10 +39,9 @@ async function run() {
 async function initDirectories() {
     try {
         await fs.mkdir(TMP_DIR);
-    } catch(_err) {}
-    try {
-        await fs.mkdir(TIMELAPSE_FIR);
-    } catch(_err) {}
+    } catch(_err) {
+        console.log(err);
+    }
 }
 
 async function scanFiles() {

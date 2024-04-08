@@ -5,7 +5,7 @@ const { CronJob } = require('cron');
 
 const DAY_MS = 1000 * 3600 * 24;
 const CAMERA_FILE_PATH = path.join(__dirname, 'images');
-const TMP_DIR = path.join(__dirname, 'tmp');
+const TMP_DIR = path.join(__dirname, 'images', 'tmp');
 const TIMELAPSE_FIR = path.join(__dirname, 'timelapse');
 
 const directoryFilter = (name) => /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/gi.test(name);

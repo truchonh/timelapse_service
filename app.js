@@ -12,25 +12,30 @@ const directoryFilter = (name) => /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/gi.test(name);
 const imageFilter = (name) => /^[0-9]{2}-[0-9]{2}-[0-9]{2}(\.jpg)$/gi.test(name);
 
 const timelapseJob = new CronJob('0 1 13 * * *', async () => {
+    const start = new Date(new Date().getTime() - DAY_MS);
+    start.setHours(13, 0, 0);
+    const end = new Date();
+    end.setHours(13, 0, 0);
+
     try {
-        await run();
+        await run(start, end);
     } catch (err) {
         console.error(err);
     }
 });
 timelapseJob.start();
 
-async function run() {
+module.exports.run = async function run(start, end, outputNameOverride) {
+    if (!start || !end) {
+        throw new Error('Missing start and/or end date.');
+    }
+
     await initDirectories();
     const files = await scanFiles();
 
-    const startDate = new Date(new Date().getTime() - DAY_MS);
-    startDate.setHours(13, 0, 0);
-    const endDate = new Date();
-    endDate.setHours(13, 0, 0);
-    await prepareImages(files, startDate, endDate);
+    await prepareImages(files, start, end);
 
-    const outputName = `${startDate.toLocaleDateString('fr-CA')}.mp4`;
+    const outputName = `${outputNameOverride || start.toLocaleDateString('fr-CA')}.mp4`;
     await runFfmpeg(TMP_DIR, path.join(TIMELAPSE_FIR, outputName));
 
     await cleanupTempFiles();
@@ -40,7 +45,7 @@ async function initDirectories() {
     try {
         await fs.mkdir(TMP_DIR);
     } catch(_err) {
-        console.log(err);
+        console.log(_err);
     }
 }
 

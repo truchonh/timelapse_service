@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "main": "app.js",
   "license": "MIT",
+  "scripts": {
+    "create-timelapse": "node commands.js run"
+  },
   "dependencies": {
+    "commander": "^12.0.0",
     "cron": "^3.1.6"
   }
 }

@@ -11,7 +11,7 @@ const TIMELAPSE_FIR = path.join(__dirname, 'timelapse');
 const directoryFilter = (name) => /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/gi.test(name);
 const imageFilter = (name) => /^[0-9]{2}-[0-9]{2}-[0-9]{2}(\.jpg)$/gi.test(name);
 
-const timelapseJob = new CronJob('0 1 9 * * *', async () => {
+const timelapseJob = new CronJob('0 1 13 * * *', async () => {
     try {
         await run();
     } catch (err) {
@@ -25,9 +25,9 @@ async function run() {
     const files = await scanFiles();
 
     const startDate = new Date(new Date().getTime() - DAY_MS);
-    startDate.setHours(9, 0, 0);
+    startDate.setHours(13, 0, 0);
     const endDate = new Date();
-    endDate.setHours(9, 0, 0);
+    endDate.setHours(13, 0, 0);
     await prepareImages(files, startDate, endDate);
 
     const outputName = `${startDate.toLocaleDateString('fr-CA')}.mp4`;

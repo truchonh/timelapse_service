@@ -25,7 +25,7 @@ const timelapseJob = new CronJob('0 1 13 * * *', async () => {
 });
 timelapseJob.start();
 
-module.exports.run = async function run(start, end, outputNameOverride) {
+async function run(start, end, outputNameOverride) {
     if (!start || !end) {
         throw new Error('Missing start and/or end date.');
     }
@@ -40,6 +40,7 @@ module.exports.run = async function run(start, end, outputNameOverride) {
 
     await cleanupTempFiles();
 }
+module.exports.run = run;
 
 async function initDirectories() {
     try {

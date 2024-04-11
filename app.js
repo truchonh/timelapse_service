@@ -26,6 +26,8 @@ const timelapseJob = new CronJob('15 0 * * * *', async () => {
 timelapseJob.start();
 
 async function run(start, end, outputNameOverride) {
+    console.log(start.format('YYYY-MM-DD_HH[:00]'));
+
     if (!start || !end) {
         throw new Error('Missing start and/or end date.');
     }
@@ -35,7 +37,7 @@ async function run(start, end, outputNameOverride) {
 
     await prepareImages(files, start, end);
 
-    const outputName = `${outputNameOverride || start.format('YYYY-MM-DD_HH[:00]')}.mp4`;
+    const outputName = `${outputNameOverride || start.format('YYYY-MM-DD_HH[00]')}.mp4`;
     await runFfmpeg(TMP_DIR, path.join(TIMELAPSE_FIR, outputName));
 
     await cleanupTempFiles();

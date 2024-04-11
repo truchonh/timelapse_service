@@ -119,5 +119,5 @@ function runFfmpeg(imagePath, outputPath) {
 }
 
 async function cleanupTempFiles() {
-    await fs.rm(TMP_DIR, { recursive: true });
+    await fs.rm(TMP_DIR, { recursive: true, force: true });
 }

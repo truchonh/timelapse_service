@@ -4,6 +4,7 @@ const { spawn } = require('child_process');
 const { CronJob } = require('cron');
 const dayjs = require('dayjs');
 const { sortBy } = require('lodash');
+const { rimraf } = require('rimraf');
 
 const CAMERA_FILE_PATH = path.join(__dirname, 'images');
 const TMP_DIR = path.join(__dirname, 'images', 'tmp');
@@ -45,7 +46,6 @@ async function initDirectories() {
     try {
         await fs.mkdir(TMP_DIR);
     } catch(_err) {
-        console.log(_err);
     }
 }
 
@@ -108,5 +108,5 @@ function runFfmpeg(imagePath, outputPath) {
 }
 
 async function cleanupTempFiles() {
-    await fs.rm(TMP_DIR, { recursive: true, force: true });
+    await rimraf(TMP_DIR);
 }

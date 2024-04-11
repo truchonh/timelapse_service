@@ -1,5 +1,6 @@
 const { program } = require('commander');
 const { run } = require('./app');
+const dayjs = require('dayjs');
 
 program
     .name('timelapse-creator')
@@ -8,17 +9,19 @@ program.command('run')
     .requiredOption('--time <hh:mm>')
     .option('--end <hh:mm>')
     .action(async (options) => {
-        const start = new Date();
+        const start = dayjs();
         const [startHour, startMinute] = options.time.split(':');
-        start.setHours(startHour, startMinute, 0);
+        start.hour(startHour +0);
+        start.minute(startMinute +0);
 
-        const end = new Date();
+        const end = dayjs();
         if (options.end) {
             const [endHour, endMinute] = options.end.split(':');
-            end.setHours(endHour, endMinute, 0);
+            end.hour(endHour +0);
+            end.minute(endMinute +0);
         }
 
-        await run(start, end, start.toLocaleDateString('fr-CA') + '_' + Date.now());
+        await run(start, end, start.format('YYYY-MM-DD') + '_' + Date.now());
 
         process.exit(0);
     });

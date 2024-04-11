@@ -2,8 +2,9 @@ const fs = require('fs/promises');
 const path = require('path');
 const { spawn } = require('child_process');
 const { CronJob } = require('cron');
+const dayjs = require('dayjs');
+const { sortBy } = require('lodash');
 
-const DAY_MS = 1000 * 3600 * 24;
 const CAMERA_FILE_PATH = path.join(__dirname, 'images');
 const TMP_DIR = path.join(__dirname, 'images', 'tmp');
 const TIMELAPSE_FIR = path.join(__dirname, 'timelapse');
@@ -11,11 +12,9 @@ const TIMELAPSE_FIR = path.join(__dirname, 'timelapse');
 const directoryFilter = (name) => /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/gi.test(name);
 const imageFilter = (name) => /^[0-9]{2}-[0-9]{2}-[0-9]{2}(\.jpg)$/gi.test(name);
 
-const timelapseJob = new CronJob('0 1 13 * * *', async () => {
-    const start = new Date(new Date().getTime() - DAY_MS);
-    start.setHours(13, 0, 0);
-    const end = new Date();
-    end.setHours(13, 0, 0);
+const timelapseJob = new CronJob('15 0 * * * *', async () => {
+    const start = dayjs().subtract(1, 'hour').startOf('hour');
+    const end = start.clone().add(1, 'hour');
 
     try {
         await run(start, end);
@@ -35,7 +34,7 @@ async function run(start, end, outputNameOverride) {
 
     await prepareImages(files, start, end);
 
-    const outputName = `${outputNameOverride || start.toLocaleDateString('fr-CA')}.mp4`;
+    const outputName = `${outputNameOverride || start.format('YYYY-MM-DD_HH[:00]')}.mp4`;
     await runFfmpeg(TMP_DIR, path.join(TIMELAPSE_FIR, outputName));
 
     await cleanupTempFiles();
@@ -73,24 +72,14 @@ async function scanFiles() {
 
 async function prepareImages(files, startDate, endDate) {
     const selectedFiles = files.filter(file => {
-        const start = startDate.getTime();
-        const end = endDate.getTime();
+        const start = startDate.valueOf();
+        const end = endDate.valueOf();
         const fileDate = file.date.getTime();
         return start <= fileDate && fileDate < end;
     });
-    selectedFiles.sort((a, b) => {
-        const aTime = a.date.getTime();
-        const bTime = b.date.getTime();
-        if (aTime < bTime) {
-            return -1;
-        } else if (aTime > bTime) {
-            return 1;
-        }
-        return 0;
-    });
     
     let index = 0;
-    for (const file of selectedFiles) {
+    for (const file of sortBy(selectedFiles, (file) => file.date.valueOf())) {
         const name = `${index.toString().padStart(6, '0')}.jpg`;
         await fs.copyFile(file.path, path.join(TMP_DIR, name));
         index++;

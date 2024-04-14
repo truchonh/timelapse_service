@@ -49,6 +49,7 @@ async function initDirectories() {
     } catch(err) {
         console.error(err);
     }
+}
 
 async function scanFiles() {
     const files = [];

@@ -9,16 +9,18 @@ program.command('run')
     .requiredOption('--time <hh:mm>')
     .option('--end <hh:mm>')
     .action(async (options) => {
-        const start = dayjs();
+        console.log(options);
+    
+        let start = dayjs();
         const [startHour, startMinute] = options.time.split(':');
-        start.hour(startHour +0);
-        start.minute(startMinute +0);
+        start = start.hour(parseInt(startHour));
+        start = start.minute(parseInt(startMinute));
 
-        const end = dayjs();
+        let end = dayjs();
         if (options.end) {
             const [endHour, endMinute] = options.end.split(':');
-            end.hour(endHour +0);
-            end.minute(endMinute +0);
+            end = end.hour(parseInt(endHour));
+            end = end.minute(parseInt(endMinute));
         }
 
         await run(start, end, start.format('YYYY-MM-DD') + '_' + Date.now());

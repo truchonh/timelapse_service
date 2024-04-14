@@ -5,6 +5,10 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get upgrade -y
 
+# timezone
+RUN apt install tzdata -y
+ENV TZ="America/New_York"
+
 # install node
 RUN apt-get install -y curl
 RUN curl -sL https://deb.nodesource.com/setup_20.x | bash -

@@ -19,8 +19,7 @@ const timelapseJob = new CronJob('15 0 * * * *', async () => {
 
     try {
         await run(start, end);
-    } catch (err) {
-        console.error(err);
+    } catch (_err) {
     }
 });
 timelapseJob.start();
@@ -47,9 +46,9 @@ module.exports.run = run;
 async function initDirectories() {
     try {
         await fs.mkdir(TMP_DIR);
-    } catch(_err) {
+    } catch(err) {
+        console.error(err);
     }
-}
 
 async function scanFiles() {
     const files = [];

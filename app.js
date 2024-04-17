@@ -53,7 +53,7 @@ const _job = async () => {
         const listPath = path.join(TMP_DIR, 'list.txt');
         await fs.writeFile(
             listPath,
-            files.map(file => path.join(TIMELAPSE_DIR, file)).join('\n'),
+            files.map(file => `file '${path.join(TIMELAPSE_DIR, file)}'`).join('\n'),
             { encoding: 'utf-8' }
         );
         await combineVideos(listPath, path.join(TIMELAPSE_DIR, date.format('YYYY-MM-DD[.mp4]')));

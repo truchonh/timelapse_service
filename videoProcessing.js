@@ -126,8 +126,14 @@ function combineVideos(listFilePath, outputPath) {
     ffmpeg.stderr.on('data', (data) => {
         console.error(data.toString());
     });
-    return new Promise((resolve) => {
-        ffmpeg.on('close', resolve);
+    return new Promise((resolve, reject) => {
+        ffmpeg.on('close', (code) => {
+            if (code === 0) {
+                resolve(0);
+            } else {
+                reject(code);
+            }
+        });
     });
 }
 module.exports.combineVideos = combineVideos;

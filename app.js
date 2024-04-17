@@ -66,4 +66,3 @@ const _job = async () => {
 };
 const combineDailyVideos = new CronJob(everyDayAtMidnight, _job);
 combineDailyVideos.start();
-combineDailyVideos.runOnce();

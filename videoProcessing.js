@@ -116,6 +116,7 @@ module.exports.listVideoChunks = listVideoChunks;
 function combineVideos(listFilePath, outputPath) {
     const ffmpeg = spawn('ffmpeg', [
         '-f', 'concat', 
+        '-safe', '0',
         '-i', listFilePath, 
         '-c', 'copy',
         outputPath

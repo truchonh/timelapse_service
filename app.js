@@ -44,8 +44,8 @@ async function run(start, end, outputNameOverride) {
 }
 module.exports.run = run;
 
-const everyDayAtMidnight = '0 0 0 * * *';
-const _job = async () => {
+const everyDayAtMidnightIsh = '0 5 0 * * *';
+const combineDailyVideos = new CronJob(everyDayAtMidnightIsh, async () => {
     await initDirectories();
 
     const videoLists = await listVideoChunks();
@@ -63,6 +63,5 @@ const _job = async () => {
     }
 
     await cleanupTempFiles();
-};
-const combineDailyVideos = new CronJob(everyDayAtMidnight, _job);
+});
 combineDailyVideos.start();

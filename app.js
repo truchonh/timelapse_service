@@ -41,6 +41,7 @@ async function run(start, end, outputNameOverride) {
     const outputName = `${outputNameOverride || start.format('YYYY-MM-DD_HH[00]')}.mp4`;
     await combineImages(TMP_DIR, path.join(TIMELAPSE_DIR, outputName));
 
+    await cleanupTempFiles();
 }
 module.exports.run = run;
 

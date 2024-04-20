@@ -59,7 +59,7 @@ async function prepareImages(files, startDate, endDate) {
 module.exports.prepareImages = prepareImages;
 
 function combineImages(imagePath, outputPath) {
-    const ffmpeg = spawn('ffmpeg', [
+    return runFfmpeg([
         '-framerate', '30', 
         '-i', path.join(imagePath, '%06d.jpg'), 
         '-s:v', '1280x720',
@@ -68,20 +68,11 @@ function combineImages(imagePath, outputPath) {
         '-pix_fmt', 'yuv420p',
         outputPath
     ]);
-    ffmpeg.stdout.on('data', (data) => {
-        console.log(data.toString());
-    });
-    ffmpeg.stderr.on('data', (data) => {
-        console.error(data.toString());
-    });
-    return new Promise((resolve) => {
-        ffmpeg.on('close', resolve);
-    });
 }
 module.exports.combineImages = combineImages;
 
 async function cleanupTempFiles() {
-    await rimraf(TMP_DIR);
+    await rimraf(TMP_DIR, { preserveRoot: true });
 }
 module.exports.cleanupTempFiles = cleanupTempFiles;
 
@@ -114,13 +105,18 @@ async function listVideoChunks() {
 module.exports.listVideoChunks = listVideoChunks;
 
 function combineVideos(listFilePath, outputPath) {
-    const ffmpeg = spawn('ffmpeg', [
+    return runFfmpeg([
         '-f', 'concat', 
         '-safe', '0',
         '-i', listFilePath, 
         '-c', 'copy',
         outputPath
     ]);
+}
+module.exports.combineVideos = combineVideos;
+
+function runFfmpeg(args) {
+    const ffmpeg = spawn('ffmpeg', args);
     ffmpeg.stdout.on('data', (data) => {
         console.log(data.toString());
     });
@@ -137,4 +133,3 @@ function combineVideos(listFilePath, outputPath) {
         });
     });
 }
-module.exports.combineVideos = combineVideos;

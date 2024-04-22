@@ -62,7 +62,7 @@ function combineImages(imagePath, outputPath) {
     return runFfmpeg([
         '-framerate', '30', 
         '-i', path.join(imagePath, '%06d.jpg'), 
-        '-s:v', '1280x720',
+        '-s:v', '1920x1080',
         '-c:v', 'libx264',
         '-crf', '17',
         '-pix_fmt', 'yuv420p',
